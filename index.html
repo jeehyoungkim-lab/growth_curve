@@ -5,62 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lower Limb Growth Predictor</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://w3.org viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦵</text></svg>">
-    
     <style>
         :root { --primary-color: #1a73e8; --bg-color: #f8f9fa; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); position: relative; }
-        .disclaimer { background-color: #fff8e1; color: #795548; padding: 12px; border-radius: 8px; border-left: 5px solid #ffc107; font-size: 0.85em; margin-bottom: 20px; }
-        h2 { text-align: center; color: var(--primary-color); margin-bottom: 25px; }
-        .main-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        @media (max-width: 800px) { .main-layout { grid-template-columns: 1fr; } }
-        .input-section, .result-section { padding: 10px; }
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.9em; color: #555; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1em; }
-        .gender-wrap { display: flex; gap: 20px; padding: 10px 0; }
-        .gender-wrap label { display: inline-flex; align-items: center; cursor: pointer; font-weight: 500; }
-        .gender-wrap input[type="radio"] { width: auto; margin-right: 8px; cursor: pointer; }
-        .ratio-box { background: #f1f3f4; padding: 15px; border-radius: 12px; margin-top: 10px; }
-        .ratio-title { font-size: 0.85em; color: var(--primary-color); margin-bottom: 10px; font-weight: bold; }
-        .controls { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .btn-group { display: flex; gap: 10px; }
-        button { padding: 18px; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1em; font-weight: bold; transition: 0.2s; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); margin: 0; padding: 10px; color: #333; overflow-x: hidden; }
+        .container { max-width: 950px; margin: auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .disclaimer { background-color: #fff8e1; color: #795548; padding: 8px 12px; border-radius: 8px; border-left: 5px solid #ffc107; font-size: 0.8em; margin-bottom: 15px; }
+        h2 { text-align: center; color: var(--primary-color); margin: 0 0 15px 0; font-size: 1.4em; }
+        
+        .main-layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; align-items: start; }
+        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
+
+        .section-box { background: #f1f3f4; padding: 12px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #e0e0e0; }
+        .section-title { font-size: 0.85em; color: var(--primary-color); margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #d1d3d4; padding-bottom: 4px; }
+        
+        .input-group { margin-bottom: 8px; }
+        label { display: block; font-weight: 700; margin-bottom: 4px; font-size: 0.82em; color: #555; }
+        input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 0.95em; }
+        input[readonly] { background-color: #e9ecef; color: #6c757d; cursor: not-allowed; border: 1px dashed #ccc; }
+        
+        .gender-wrap { display: flex; gap: 15px; padding: 2px 0; }
+        .gender-wrap label { display: inline-flex; align-items: center; cursor: pointer; font-weight: 500; font-size: 0.85em; }
+        .gender-wrap input[type="radio"] { width: auto; margin-right: 6px; }
+        
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .controls-row { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+        button { padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; font-weight: bold; transition: 0.2s; }
         .btn-calc { background-color: var(--primary-color); color: white; flex: 2; }
         .btn-reset { background-color: #dadce0; color: #3c4043; flex: 1; }
-        .auto-calc-toggle { display: flex; align-items: center; gap: 8px; font-size: 0.9em; color: #666; cursor: pointer; margin-top: 5px; }
-        .auto-calc-toggle input { width: auto; cursor: pointer; }
-        .result-card { background: #e8f0fe; padding: 20px; border-radius: 12px; min-height: 350px; box-sizing: border-box; }
-        .result-header { border-bottom: 2px solid #aecbfa; padding-bottom: 10px; margin-bottom: 15px; font-weight: bold; color: #174ea6; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; font-size: 0.9em; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; }
-        th { background: #f8f9fa; color: #666; }
+        .auto-calc-wrap { display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 0.75em; color: #666; cursor: pointer; }
+        .auto-calc-wrap input { width: auto; margin: 0; }
+
+        .result-card { background: #e8f0fe; padding: 15px; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 480px; }
+        .result-header { border-bottom: 2px solid #aecbfa; padding-bottom: 6px; font-weight: bold; color: #174ea6; font-size: 0.95em; display: flex; align-items: center; gap: 5px; }
+        .res-row { display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 2px; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; font-size: 0.8em; margin-top: 5px; }
+        th, td { padding: 8px 4px; border-bottom: 1px solid #eee; text-align: center; }
+        th { background: #f8f9fa; color: #666; font-weight: bold; }
         .loss { color: #d93025; font-weight: bold; }
-        .readonly-field { background-color: #eee; color: var(--primary-color); font-weight: bold; }
-        .footer-info { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
-        .paper-link { font-size: 0.82em; color: #666; font-style: italic; background: #fdfdfd; padding: 12px; border: 1px dashed #ccc; border-radius: 8px; text-align: right; max-width: 600px; }
-        .lang-selector { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        .lang-selector label { margin: 0; font-weight: 500; font-size: 0.85em; display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; }
+        .total-row { background: #f1f3f4; font-weight: bold; }
+
+        .card-footer { margin-top: auto; padding-top: 10px; border-top: 1px solid #aecbfa; }
+        .paper-link { font-size: 0.72em; color: #666; font-style: italic; margin-bottom: 8px; line-height: 1.3; }
+        .lang-selector { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; border-top: 1px dashed #aecbfa; padding-top: 8px; }
+        .lang-selector label { margin: 0; font-size: 0.72em; display: flex; align-items: center; gap: 3px; cursor: pointer; color: #444; font-weight: 500; }
+        .lang-selector input { width: auto; margin: 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="disclaimer" id="txt-disclaimer">
-        ⚠️ <b>General Disclaimer:</b> These calculations are based on medical averages and assumptions. Actual growth may vary. Use for <b>reference only</b>.
-    </div>
-
+    <div class="disclaimer" id="txt-disclaimer"></div>
     <h2 id="txt-title">Lower Limb Growth Predictor</h2>
 
     <div class="main-layout">
+        <!-- Input Section -->
         <div class="input-section">
             <div class="row-2">
                 <div class="input-group">
                     <label id="txt-label-gender">Gender</label>
                     <div class="gender-wrap">
-                        <label><input type="radio" name="gender" value="male" onchange="handleInputChange(true)"> <span id="txt-male">Male</span></label>
-                        <label><input type="radio" name="gender" value="female" checked onchange="handleInputChange(true)"> <span id="txt-female">Female</span></label>
+                        <label><input type="radio" name="gender" value="male" onchange="setDefaultValues()"> <span id="txt-male">Male</span></label>
+                        <label><input type="radio" name="gender" value="female" checked onchange="setDefaultValues()"> <span id="txt-female">Female</span></label>
                     </div>
                 </div>
                 <div class="input-group">
@@ -69,89 +76,77 @@
                 </div>
             </div>
 
-            <div class="row-2">
-                <div class="input-group">
-                    <label id="txt-label-stopAge">Stop Age</label>
-                    <input type="number" id="stopAge" value="15" step="0.1" oninput="handleInputChange()">
+            <div class="section-box">
+                <div class="section-title" id="txt-sec-femur">Femur (Thigh)</div>
+                <div class="row-2">
+                    <div class="input-group"><label id="txt-label-fStop">Stop Age</label><input type="number" id="fStopAge" step="0.1" oninput="handleInputChange()"></div>
+                    <div class="input-group"><label id="txt-label-fRate">Rate (cm/yr)</label><input type="number" id="fRate" step="0.01" oninput="handleInputChange()"></div>
                 </div>
-                <div class="input-group">
-                    <label id="txt-label-growthRate">Limb Growth Rate (cm/yr)</label>
-                    <input type="number" id="growthRate" value="2.5" step="0.1" oninput="handleInputChange()">
+                <div class="row-2">
+                    <div class="input-group"><label id="txt-fu">Prox. Femur (%)</label><input type="number" id="fuRatio" value="30" oninput="syncRatios('f')"></div>
+                    <div class="input-group"><label id="txt-fl">Dist. Femur (%) (Auto)</label><input type="number" id="flRatio" value="70" readonly></div>
                 </div>
             </div>
 
-            <div class="ratio-box">
-                <div class="ratio-title" id="txt-ratio-title">Growth Contribution (%) - Auto-balancing</div>
+            <div class="section-box">
+                <div class="section-title" id="txt-sec-tibia">Tibia (Shin)</div>
                 <div class="row-2">
-                    <div class="input-group">
-                        <label id="txt-label-fu">Proximal Femur</label>
-                        <input type="number" id="fu" value="15" oninput="handleInputChange()">
-                    </div>
-                    <div class="input-group">
-                        <label id="txt-label-fl">Distal Femur</label>
-                        <input type="number" id="fl" value="38" oninput="handleInputChange()">
-                    </div>
+                    <div class="input-group"><label id="txt-label-tStop">Stop Age</label><input type="number" id="tStopAge" step="0.1" oninput="handleInputChange()"></div>
+                    <div class="input-group"><label id="txt-label-tRate">Rate (cm/yr)</label><input type="number" id="tRate" step="0.01" oninput="handleInputChange()"></div>
                 </div>
                 <div class="row-2">
-                    <div class="input-group">
-                        <label id="txt-label-tu">Proximal Tibia</label>
-                        <input type="number" id="tu" value="27" oninput="handleInputChange()">
-                    </div>
-                    <div class="input-group">
-                        <label id="txt-label-tl">Distal Tibia (Auto)</label>
-                        <input type="number" id="tl" value="20" class="readonly-field" readonly>
-                    </div>
+                    <div class="input-group"><label id="txt-tu">Prox. Tibia (%)</label><input type="number" id="tuRatio" value="55" oninput="syncRatios('t')"></div>
+                    <div class="input-group"><label id="txt-tl">Dist. Tibia (%) (Auto)</label><input type="number" id="tlRatio" value="45" readonly></div>
                 </div>
             </div>
 
-            <div class="controls">
-                <div class="btn-group">
-                    <button class="btn-reset" onclick="resetAll()" id="txt-btn-reset">Reset</button>
-                    <button class="btn-calc" onclick="calculate()" id="txt-btn-calc">Calculate Growth</button>
-                </div>
-                <label class="auto-calc-toggle">
-                    <input type="checkbox" id="autoCalcEnabled" checked onchange="handleInputChange()">
-                    <span id="txt-auto-calc">Enable real-time calculation</span>
+            <div class="controls-row">
+                <button class="btn-reset" onclick="resetAll()" id="txt-btn-reset">Reset</button>
+                <button class="btn-calc" onclick="calculate()" id="txt-btn-calc">Calculate</button>
+                <label class="auto-calc-wrap">
+                    <input type="checkbox" id="autoCalcEnabled" checked> <span id="txt-auto-calc">Real-time</span>
                 </label>
             </div>
         </div>
 
-        <div class="result-section" id="resView" style="visibility: visible; opacity: 0.5;">
+        <!-- Result Section -->
+        <div class="result-section">
             <div class="result-card">
-                <div class="result-header" id="txt-res-header">📊 Growth Analysis Data</div>
-                <p><span id="txt-res-years-label">Remaining Growth Years:</span> <b><span id="resYears">-</span> <span id="txt-unit-years">Years</span></b></p>
-                <p><span id="txt-res-total-label">Est. Total Limb Growth:</span> <b style="font-size:1.2em; color:var(--primary-color);"><span id="resTotal">-</span> cm</b></p>
-                
-                <p style="margin-top:20px; font-size:0.9em; font-weight:bold;" id="txt-res-sub">⚠️ Growth Arrest Simulation</p>
+                <div class="result-header" id="txt-res-header"><span>📊</span> <span id="txt-res-header-text">Growth Analysis</span></div>
+                <div class="res-row">
+                    <span id="txt-res-years-label">Remaining (F/T):</span>
+                    <b><span id="resYearsF">-</span> / <span id="resYearsT">-</span> <span id="txt-unit-years">Yrs</span></b>
+                </div>
+                <div class="res-row">
+                    <span id="txt-res-total-label">Potential Growth:</span>
+                    <b style="color:var(--primary-color); font-size:1.1em;"><span id="resTotal">-</span> cm</b>
+                </div>
+
+                <div style="font-size:0.8em; font-weight:bold; color:#d93025; margin-top:5px;" id="txt-res-sub">⚠️ Growth Loss Simulation</div>
                 <table>
                     <thead>
-                        <tr>
-                            <th id="txt-th-point">Arrest Point</th>
-                            <th id="txt-th-potential">Potential</th>
-                            <th id="txt-th-loss">Loss (Gap)</th>
-                        </tr>
+                        <tr><th id="txt-th-point">Segment</th><th id="txt-th-potential">Ratio</th><th id="txt-th-loss">Loss</th></tr>
                     </thead>
-                    <tbody id="resTable">
-                        <tr><td colspan="3" style="color:#999; padding:40px;" id="txt-table-placeholder">Please click calculate or enable auto-calc</td></tr>
-                    </tbody>
+                    <tbody id="resTable"></tbody>
+                    <tfoot>
+                        <tr class="total-row"><td colspan="2" id="txt-total-loss-label">Total Loss</td><td class="loss" id="resTotalLoss">-</td></tr>
+                    </tfoot>
                 </table>
-            </div>
-        </div>
-    </div>
 
-    <div class="footer-info">
-        <div class="paper-link" id="txt-paper-info">
-            📄 <b>Reference:</b> The supporting paper is currently in preparation and will be linked here upon publication.
-        </div>
-        <div class="lang-selector">
-            <label><input type="radio" name="lang" value="en" checked onclick="changeLanguage('en')"> English</label>
-            <label><input type="radio" name="lang" value="fr" onclick="changeLanguage('fr')"> Français</label>
-            <label><input type="radio" name="lang" value="it" onclick="changeLanguage('it')"> Italiano</label>
-            <label><input type="radio" name="lang" value="de" onclick="changeLanguage('de')"> Deutsch</label>
-            <label><input type="radio" name="lang" value="es" onclick="changeLanguage('es')"> Español</label>
-            <label><input type="radio" name="lang" value="zh" onclick="changeLanguage('zh')"> 中文</label>
-            <label><input type="radio" name="lang" value="ja" onclick="changeLanguage('ja')"> 日本語</label>
-            <label><input type="radio" name="lang" value="ko" onclick="changeLanguage('ko')"> 한국어</label>
+                <div class="card-footer">
+                    <div class="paper-link" id="txt-paper-info"></div>
+                    <div class="lang-selector">
+                        <label><input type="radio" name="lang" value="en" onclick="changeLanguage('en')"> EN</label>
+                        <label><input type="radio" name="lang" value="fr" onclick="changeLanguage('fr')"> FR</label>
+                        <label><input type="radio" name="lang" value="it" onclick="changeLanguage('it')"> IT</label>
+                        <label><input type="radio" name="lang" value="de" onclick="changeLanguage('de')"> DE</label>
+                        <label><input type="radio" name="lang" value="es" onclick="changeLanguage('es')"> ES</label>
+                        <label><input type="radio" name="lang" value="zh" onclick="changeLanguage('zh')"> 中</label>
+                        <label><input type="radio" name="lang" value="ja" onclick="changeLanguage('ja')"> 日</label>
+                        <label><input type="radio" name="lang" value="ko" onclick="changeLanguage('ko')"> 한</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -159,201 +154,229 @@
 <script>
     const translations = {
         en: {
-            disclaimer: "⚠️ <b>General Disclaimer:</b> These calculations are based on medical averages and assumptions. Actual growth may vary. Use for <b>reference only</b>.",
+            disclaimer: "⚠️ <b>Disclaimer:</b> Medical averages. Use for <b>reference only</b>.",
             title: "Lower Limb Growth Predictor",
-            gender: "Gender", male: "Male", female: "Female",
-            currentAge: "Current Age", stopAge: "Stop Age", growthRate: "Limb Growth Rate (cm/yr)",
-            ratioTitle: "Growth Contribution (%) - Auto-balancing",
-            fu: "Proximal Femur", fl: "Distal Femur", tu: "Proximal Tibia", tl: "Distal Tibia (Auto)",
-            btnReset: "Reset", btnCalc: "Calculate Growth", autoCalc: "Enable real-time calculation",
-            resHeader: "📊 Growth Analysis Data", resYearsLabel: "Remaining Growth Years:", unitYears: "Years",
-            resTotalLabel: "Est. Total Limb Growth:", resSub: "⚠️ Growth Arrest Simulation",
-            thPoint: "Arrest Point", thPotential: "Potential", thLoss: "Loss (Gap)",
-            placeholder: "Please click calculate or enable auto-calc",
-            paperInfo: "📄 <b>Reference:</b> The supporting paper is currently in preparation and will be linked here upon publication."
-        },
-        fr: {
-            disclaimer: "⚠️ <b>Avertissement:</b> Ces calculs sont basés sur des moyennes médicales. La croissance réelle peut varier. À titre <b>indicatif uniquement</b>.",
-            title: "Prédicteur de croissance des membres inférieurs",
-            gender: "Genre", male: "Homme", female: "Femme",
-            currentAge: "Âge actuel", stopAge: "Âge d'arrêt", growthRate: "Taux de croissance du membre (cm/an)",
-            ratioTitle: "Contribution à la croissance (%)",
-            fu: "Fémur proximal", fl: "Fémur distal", tu: "Tibia proximal", tl: "Tibia distal (Auto)",
-            btnReset: "Réinitialiser", btnCalc: "Calculer la croissance", autoCalc: "Calcul en temps réel",
-            resHeader: "📊 Données d'analyse", resYearsLabel: "Années de croissance restantes:", unitYears: "Ans",
-            resTotalLabel: "Croissance totale estimée:", resSub: "⚠️ Simulation d'arrêt de croissance",
-            thPoint: "Point d'arrêt", thPotential: "Potentiel", thLoss: "Perte (Écart)",
-            placeholder: "Veuillez cliquer sur calculer",
-            paperInfo: "📄 <b>Référence:</b> L'article de support est en préparation et sera lié ici après publication."
-        },
-        it: {
-            disclaimer: "⚠️ <b>Disclaimer:</b> Questi calcoli si basano su medie mediche. La crescita effettiva può variare. Solo per <b>riferimento</b>.",
-            title: "Predittore della crescita degli arti inferiori",
-            gender: "Sesso", male: "Maschio", female: "Femmina",
-            currentAge: "Età attuale", stopAge: "Età di arresto", growthRate: "Tasso di crescita dell'arto (cm/anno)",
-            ratioTitle: "Contributo alla crescita (%)",
-            fu: "Femore prossimale", fl: "Femore distale", tu: "Tibia prossimale", tl: "Tibia distale (Auto)",
-            btnReset: "Reset", btnCalc: "Calcola crescita", autoCalc: "Calcolo in tempo reale",
-            resHeader: "📊 Dati di analisi della crescita", resYearsLabel: "Anni di crescita rimanenti:", unitYears: "Anni",
-            resTotalLabel: "Crescita totale stimata:", resSub: "⚠️ Simulazione arresto crescita",
-            thPoint: "Punto di arresto", thPotential: "Potenziale", thLoss: "Perdita (Gap)",
-            placeholder: "Clicca su calcola",
-            paperInfo: "📄 <b>Riferimento:</b> Il documento di supporto è in preparazione e sarà collegato qui dopo la pubblicazione."
-        },
-        de: {
-            disclaimer: "⚠️ <b>Haftungsausschluss:</b> Diese Berechnungen basieren auf medizinischen Durchschnittswerten. Nur zur <b>Information</b>.",
-            title: "Wachstumsprognose für die unteren Gliedmaßen",
-            gender: "Geschlecht", male: "Männlich", female: "Weiblich",
-            currentAge: "Aktuelles Alter", stopAge: "Endalter", growthRate: "Gliedmaßenwachstum (cm/Jahr)",
-            ratioTitle: "Wachstumsbeitrag (%)",
-            fu: "Proximaler Femur", fl: "Distaler Femur", tu: "Proximale Tibia", tl: "Distale Tibia (Auto)",
-            btnReset: "Zurücksetzen", btnCalc: "Wachstum berechnen", autoCalc: "Echtzeit-Berechnung",
-            resHeader: "📊 Wachstumsanalysedaten", resYearsLabel: "Verbleibende Wachstumsjahre:", unitYears: "Jahre",
-            resTotalLabel: "Geschätztes Gesamtwachstum:", resSub: "⚠️ Wachstumsstopp-Simulation",
-            thPoint: "Stopp-Punkt", thPotential: "Potenzial", thLoss: "Verlust (Lücke)",
-            placeholder: "Bitte auf Berechnen klicken",
-            paperInfo: "📄 <b>Referenz:</b> Das Begleitdokument ist in Vorbereitung und wird hier nach Veröffentlichung verlinkt."
-        },
-        es: {
-            disclaimer: "⚠️ <b>Descargo de responsabilidad:</b> Estos cálculos se basan en promedios médicos. Uso <b>solo como referencia</b>.",
-            title: "Predictor de crecimiento de extremidades inferiores",
-            gender: "Género", male: "Masculino", female: "Femenino",
-            currentAge: "Edad actual", stopAge: "Edad de detención", growthRate: "Tasa de crecimiento de extremidad (cm/año)",
-            ratioTitle: "Contribución al crecimiento (%)",
-            fu: "Fémur proximal", fl: "Fémur distal", tu: "Tibia proximal", tl: "Tibia distal (Auto)",
-            btnReset: "Restablecer", btnCalc: "Calcular crecimiento", autoCalc: "Cálculo en tiempo real",
-            resHeader: "📊 Datos de análisis de crecimiento", resYearsLabel: "Años de crecimiento restantes:", unitYears: "Años",
-            resTotalLabel: "Crecimiento total estimado:", resSub: "⚠️ Simulación de paro de crecimiento",
-            thPoint: "Punto de paro", thPotential: "Potencial", thLoss: "Pérdida (Brecha)",
-            placeholder: "Haga clic en calcular",
-            paperInfo: "📄 <b>Referencia:</b> El artículo de respaldo está en preparación y se enlazará aquí tras su publicación."
-        },
-        zh: {
-            disclaimer: "⚠️ <b>免责声明：</b> 这些计算基于医学平均值。实际生长可能有所不同。仅供<b>参考</b>。",
-            title: "下肢生长预测器",
-            gender: "性别", male: "男", female: "女",
-            currentAge: "当前年龄", stopAge: "停止年龄", growthRate: "肢体生长速度 (厘米/年)",
-            ratioTitle: "生长贡献率 (%)",
-            fu: "股骨近端", fl: "股骨远端", tu: "胫骨近端", tl: "胫骨远端 (自动)",
-            btnReset: "重置", btnCalc: "计算生长", autoCalc: "启用实时计算",
-            resHeader: "📊 生长分析数据", resYearsLabel: "剩余生长时间:", unitYears: "年",
-            resTotalLabel: "预计肢体总生长量:", resSub: "⚠️ 生长停滞模拟",
-            thPoint: "停滞部位", thPotential: "生长潜力", thLoss: "生长损失 (差距)",
-            placeholder: "请点击计算或启用自动计算",
-            paperInfo: "📄 <b>参考：</b> 支持性论文正在准备中，出版后将在此链接。"
-        },
-        ja: {
-            disclaimer: "⚠️ <b>免責事項：</b> これらの計算は医学的平均に基づいています。実際の成長は異なる場合があります。<b>参考用</b>として使用してください。",
-            title: "下肢成長予測ツール",
-            gender: "性別", male: "男性", female: "女性",
-            currentAge: "現在の年齢", stopAge: "成長終了年齢", growthRate: "肢成長率 (cm/年)",
-            ratioTitle: "成長への寄与率 (%)",
-            fu: "大腿骨近位", fl: "大腿骨遠位", tu: "脛骨近位", tl: "脛骨遠位 (自動)",
-            btnReset: "リセット", btnCalc: "成長を計算", autoCalc: "リアルタイム計算を有効にする",
-            resHeader: "📊 成長分析データ", resYearsLabel: "残りの成長期間:", unitYears: "年",
-            resTotalLabel: "推定合計肢成長量:", resSub: "⚠️ 成長停止シミュレーション",
-            thPoint: "停止ポイント", thPotential: "潜在能力", thLoss: "損失 (ギャップ)",
-            placeholder: "計算をクリックしてください",
-            paperInfo: "📄 <b>参考文献：</b> 根拠となる論文は現在準備中であり、発行後にここにリンクされます。"
+            labelGender: "Gender", male: "Male", female: "Female", currentAge: "Current Age",
+            secFemur: "Femur (Thigh)", secTibia: "Tibia (Shin)",
+            fStop: "Stop Age", fRate: "Rate (cm/yr)", tStop: "Stop Age", tRate: "Rate (cm/yr)",
+            fu: "Prox. Femur (%)", fl: "Dist. Femur (%) (Auto)", tu: "Prox. Tibia (%)", tl: "Dist. Tibia (%) (Auto)",
+            btnReset: "Reset", btnCalc: "Calculate", autoCalc: "Real-time",
+            resHeader: "Growth Analysis", resYearsLabel: "Remaining (F/T):", unitYears: "Yrs",
+            resTotalLabel: "Potential Growth:", resSub: "⚠️ Growth Loss Simulation",
+            thPoint: "Segment", thPotential: "Ratio", thLoss: "Loss", totalLossLabel: "Total Loss",
+            paperInfo: "📄 <b>Reference:</b> Paper in preparation.",
+            segments: ["Proximal Femur", "Distal Femur", "Proximal Tibia", "Distal Tibia"]
         },
         ko: {
-            disclaimer: "⚠️ <b>일반 면책 조항:</b> 본 계산은 의학적 평균치 및 가정을 바탕으로 합니다. 실제 성장은 다를 수 있으며 <b>참고용</b>으로만 사용하십시오.",
-            title: "하지 성장 예측기",
-            gender: "성별", male: "남성", female: "여성",
-            currentAge: "현재 연령", stopAge: "성장 종료 연령", growthRate: "하지(다리) 성장 속도 (cm/년)",
-            ratioTitle: "성장 기여도 (%) - 자동 균형 조절",
-            fu: "대퇴골 근위부", fl: "대퇴골 원위부", tu: "경골 근위부", tl: "경골 원위부 (자동)",
-            btnReset: "초기화", btnCalc: "성장 계산하기", autoCalc: "실시간 계산 활성화",
-            resHeader: "📊 성장 분석 데이터", resYearsLabel: "잔여 성장 기간:", unitYears: "년",
-            resTotalLabel: "예상 총 하지 성장량:", resSub: "⚠️ 성장판 폐쇄 시뮬레이션",
-            thPoint: "폐쇄 부위", thPotential: "성장 잠재력", thLoss: "성장 손실 (차이)",
-            placeholder: "계산 버튼을 누르거나 실시간 계산을 활성화하세요",
-            paperInfo: "📄 <b>참고 문헌:</b> 본 웹페이지의 근거가 되는 논문은 현재 준비 중이며, 출판 시 이곳에 링크될 예정입니다."
+            disclaimer: "⚠️ <b>면책 조항:</b> 의학적 평균치 기준이며 <b>참고용</b>으로만 사용하십시오.",
+            title: "하지 성장 예측 계산기",
+            labelGender: "성별", male: "남성", female: "여성", currentAge: "현재 연령",
+            secFemur: "대퇴골 (허벅지)", secTibia: "경골 (정강이)",
+            fStop: "성장 종료", fRate: "속도 (cm/yr)", tStop: "성장 종료", tRate: "속도 (cm/yr)",
+            fu: "대퇴 상단 (%)", fl: "대퇴 하단 (%) (자동)", tu: "경골 상단 (%)", tl: "경골 하단 (%) (자동)",
+            btnReset: "초기화", btnCalc: "계산하기", autoCalc: "실시간",
+            resHeader: "성장 분석", resYearsLabel: "잔여성장(F/T):", unitYears: "년",
+            resTotalLabel: "성장 잠재량:", resSub: "⚠️ 성장 중단 시뮬레이션 (손실)",
+            thPoint: "부위", thPotential: "비율", thLoss: "손실액", totalLossLabel: "총 손실액",
+            paperInfo: "📄 <b>참고:</b> 관련 논문 준비 중입니다.",
+            segments: ["대퇴골 상단", "대퇴골 하단", "경골 상단", "경골 하단"]
+        },
+        es: {
+            disclaimer: "⚠️ <b>Aviso:</b> Basado en promedios médicos. <b>Solo referencia</b>.",
+            title: "Predictor de Crecimiento",
+            labelGender: "Género", male: "Masc.", female: "Fem.", currentAge: "Edad actual",
+            secFemur: "Fémur (Muslo)", secTibia: "Tibia (Espinilla)",
+            fStop: "Fin Fémur", fRate: "Tasa (cm/año)", tStop: "Fin Tibia", tRate: "Tasa (cm/año)",
+            fu: "Fémur Prox. (%)", fl: "Fémur Dist. (%) (Auto)", tu: "Tibia Prox. (%)", tl: "Tibia Dist. (%) (Auto)",
+            btnReset: "Reiniciar", btnCalc: "Calcular", autoCalc: "Tiempo real",
+            resHeader: "Análisis de Crecimiento", resYearsLabel: "Restante (F/T):", unitYears: "Años",
+            resTotalLabel: "Potencial:", resSub: "⚠️ Simulación de Pérdida",
+            thPoint: "Segmento", thPotential: "Ratio", thLoss: "Pérdida", totalLossLabel: "Pérdida Total",
+            paperInfo: "📄 <b>Referencia:</b> Documento en preparación.",
+            segments: ["Fémur Proximal", "Fémur Distal", "Tibia Proximal", "Tibia Distal"]
+        },
+        fr: {
+            disclaimer: "⚠️ <b>Avis:</b> Moyennes médicales. <b>Référence uniquement</b>.",
+            title: "Prédicteur de Croissance",
+            labelGender: "Genre", male: "Homme", female: "Femme", currentAge: "Âge actuel",
+            secFemur: "Fémur (Cuisse)", secTibia: "Tibia (Jambe)",
+            fStop: "Arrêt Fémur", fRate: "Vitesse (cm/an)", tStop: "Arrêt Tibia", tRate: "Vitesse (cm/an)",
+            fu: "Fémur Prox. (%)", fl: "Fémur Dist. (%) (Auto)", tu: "Tibia Prox. (%)", tl: "Tibia Dist. (%) (Auto)",
+            btnReset: "Réinitialiser", btnCalc: "Calculer", autoCalc: "Temps réel",
+            resHeader: "Analyse de Croissance", resYearsLabel: "Restant (F/T):", unitYears: "Ans",
+            resTotalLabel: "Croissance:", resSub: "⚠️ Simulation de Perte",
+            thPoint: "Segment", thPotential: "Ratio", thLoss: "Perte", totalLossLabel: "Perte Totale",
+            paperInfo: "📄 <b>Référence:</b> Article en préparation.",
+            segments: ["Fémur Proximal", "Fémur Distal", "Tibia Proximal", "Tibia Distal"]
+        },
+        it: {
+            disclaimer: "⚠️ <b>Disclaimer:</b> Medie mediche. Solo per <b>riferimento</b>.",
+            title: "Predittore Crescita Arti",
+            labelGender: "Sesso", male: "Maschio", female: "Femmina", currentAge: "Età attuale",
+            secFemur: "Femore (Coscia)", secTibia: "Tibia (Stinco)",
+            fStop: "Fine Femore", fRate: "Velocità (cm/anno)", tStop: "Fine Tibia", tRate: "Velocità (cm/anno)",
+            fu: "Femore Pross. (%)", fl: "Femore Dist. (%) (Auto)", tu: "Tibia Pross. (%)", tl: "Tibia Dist. (%) (Auto)",
+            btnReset: "Reset", btnCalc: "Calcola", autoCalc: "Tempo reale",
+            resHeader: "Analisi Crescita", resYearsLabel: "Rimanenti (F/T):", unitYears: "Anni",
+            resTotalLabel: "Potenziale:", resSub: "⚠️ Simulazione Perdita",
+            thPoint: "Segmento", thPotential: "Rapporto", thLoss: "Perdita", totalLossLabel: "Perdita Totale",
+            paperInfo: "📄 <b>Riferimento:</b> Documento in preparazione.",
+            segments: ["Femore Pross.", "Femore Dist.", "Tibia Pross.", "Tibia Dist."]
+        },
+        de: {
+            disclaimer: "⚠️ <b>Hinweis:</b> Medizinische Mittelwerte.",
+            title: "Wachstumsprognose",
+            labelGender: "Geschlecht", male: "Männlich", female: "Weiblich", currentAge: "Alter",
+            secFemur: "Femur (Oberschenkel)", secTibia: "Tibia (Schienbein)",
+            fStop: "Stopp Femur", fRate: "Rate (cm/Jahr)", tStop: "Stopp Tibia", tRate: "Rate (cm/Jahr)",
+            fu: "Prox. Femur (%)", fl: "Dist. Femur (%) (Auto)", tu: "Prox. Tibia (%)", tl: "Dist. Tibia (%) (Auto)",
+            btnReset: "Reset", btnCalc: "Berechnen", autoCalc: "Echtzeit",
+            resHeader: "Wachstumsanalyse", resYearsLabel: "Verbleibend (F/T):", unitYears: "Jahre",
+            resTotalLabel: "Potenzial:", resSub: "⚠️ Verlustsimulation",
+            thPoint: "Segment", thPotential: "Anteil", thLoss: "Verlust", totalLossLabel: "Gesamtverlust",
+            paperInfo: "📄 <b>Referenz:</b> In Vorbereitung.",
+            segments: ["Prox. Femur", "Dist. Femur", "Prox. Tibia", "Dist. Tibia"]
+        },
+        zh: {
+            disclaimer: "⚠️ <b>免责声明：</b> 基于医学平均值，仅供<b>参考</b>。",
+            title: "下肢生长预测器",
+            labelGender: "性别", male: "男", female: "女", currentAge: "当前年龄",
+            secFemur: "股骨 (大腿)", secTibia: "胫骨 (小腿)",
+            fStop: "股骨停止年龄", fRate: "增速 (cm/年)", tStop: "胫骨停止年龄", tRate: "增速 (cm/年)",
+            fu: "股骨近端 (%)", fl: "股骨远端 (%) (自动)", tu: "胫骨近端 (%)", tl: "胫骨远端 (%) (自动)",
+            btnReset: "重置", btnCalc: "计算", autoCalc: "实时计算",
+            resHeader: "生长分析", resYearsLabel: "剩余时间 (F/T):", unitYears: "年",
+            resTotalLabel: "潜在生长量:", resSub: "⚠️ 生长受阻模拟",
+            thPoint: "部位", thPotential: "比例", thLoss: "损失", totalLossLabel: "总潜力损失",
+            paperInfo: "📄 <b>参考：</b> 相关论文正在准备中。",
+            segments: ["股骨近端", "股骨远端", "胫骨近端", "胫骨远端"]
+        },
+        ja: {
+            disclaimer: "⚠️ <b>免責事項：</b> 医学的な平均値に基づいています。<b>参考用</b>です。",
+            title: "下肢成長予測計算機",
+            labelGender: "性別", male: "男性", female: "女性", currentAge: "現在の年齢",
+            secFemur: "大腿骨 (太もも)", secTibia: "脛骨 (すね)",
+            fStop: "大腿骨終了年齢", fRate: "速度 (cm/年)", tStop: "脛骨終了年齢", tRate: "速度 (cm/年)",
+            fu: "大腿骨近位 (%)", fl: "大腿骨遠位 (%) (自動)", tu: "脛骨近位 (%)", tl: "脛骨遠位 (%) (自動)",
+            btnReset: "リセット", btnCalc: "計算する", autoCalc: "リアルタイム",
+            resHeader: "成長分析", resYearsLabel: "残り (F/T):", unitYears: "年",
+            resTotalLabel: "予想成長量:", resSub: "⚠️ 成長停止シミュレーション",
+            thPoint: "部位", thPotential: "割合", thLoss: "損失", totalLossLabel: "合計損失",
+            paperInfo: "📄 <b>参考文献：</b> 論文準備中。",
+            segments: ["大腿骨近位", "大腿骨遠位", "脛骨近位", "脛骨遠位"]
         }
     };
 
+    let currentLang = 'en';
+
     function changeLanguage(lang) {
-        const t = translations[lang];
-        document.getElementById('txt-disclaimer').innerHTML = t.disclaimer;
-        document.getElementById('txt-title').innerText = t.title;
-        document.getElementById('txt-label-gender').innerText = t.gender;
-        document.getElementById('txt-male').innerText = t.male;
-        document.getElementById('txt-female').innerText = t.female;
-        document.getElementById('txt-label-currentAge').innerText = t.currentAge;
-        document.getElementById('txt-label-stopAge').innerText = t.stopAge;
-        document.getElementById('txt-label-growthRate').innerText = t.growthRate;
-        document.getElementById('txt-ratio-title').innerText = t.ratioTitle;
-        document.getElementById('txt-label-fu').innerText = t.fu;
-        document.getElementById('txt-label-fl').innerText = t.fl;
-        document.getElementById('txt-label-tu').innerText = t.tu;
-        document.getElementById('txt-label-tl').innerText = t.tl;
-        document.getElementById('txt-btn-reset').innerText = t.btnReset;
-        document.getElementById('txt-btn-calc').innerText = t.btnCalc;
-        document.getElementById('txt-auto-calc').innerText = t.autoCalc;
-        document.getElementById('txt-res-header').innerText = t.resHeader;
-        document.getElementById('txt-res-years-label').innerText = t.resYearsLabel;
-        document.getElementById('txt-unit-years').innerText = t.unitYears;
-        document.getElementById('txt-res-total-label').innerText = t.resTotalLabel;
-        document.getElementById('txt-res-sub').innerText = t.resSub;
-        document.getElementById('txt-th-point').innerText = t.thPoint;
-        document.getElementById('txt-th-potential').innerText = t.thPotential;
-        document.getElementById('txt-th-loss').innerText = t.thLoss;
-        document.getElementById('txt-paper-info').innerHTML = t.paperInfo;
-        if(document.getElementById('resTotal').innerText === "-") {
-            document.getElementById('txt-table-placeholder').innerText = t.placeholder;
-        } else { calculate(); }
+        currentLang = lang;
+        const t = translations[lang] || translations['en'];
+
+        // 명시적 ID 매핑으로 'undefined' 방지
+        const idMap = {
+            'txt-disclaimer': t.disclaimer,
+            'txt-title': t.title,
+            'txt-label-gender': t.labelGender,
+            'txt-male': t.male,
+            'txt-female': t.female,
+            'txt-label-currentAge': t.currentAge,
+            'txt-sec-femur': t.secFemur,
+            'txt-label-fStop': t.fStop,
+            'txt-label-fRate': t.fRate,
+            'txt-fu': t.fu,
+            'txt-fl': t.fl,
+            'txt-sec-tibia': t.secTibia,
+            'txt-label-tStop': t.tStop,
+            'txt-label-tRate': t.tRate,
+            'txt-tu': t.tu,
+            'txt-tl': t.tl,
+            'txt-btn-reset': t.btnReset,
+            'txt-btn-calc': t.btnCalc,
+            'txt-auto-calc': t.autoCalc,
+            'txt-res-header-text': t.resHeader,
+            'txt-res-years-label': t.resYearsLabel,
+            'txt-unit-years': t.unitYears,
+            'txt-res-total-label': t.resTotalLabel,
+            'txt-res-sub': t.resSub,
+            'txt-th-point': t.thPoint,
+            'txt-th-potential': t.thPotential,
+            'txt-th-loss': t.thLoss,
+            'txt-total-loss-label': t.totalLossLabel,
+            'txt-paper-info': t.paperInfo
+        };
+
+        Object.keys(idMap).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = idMap[id];
+        });
+
+        calculate(); // 테이블 내용 언어 업데이트
     }
 
-    function handleInputChange(isGenderChange = false) {
-        const fu = parseFloat(document.getElementById('fu').value) || 0;
-        const fl = parseFloat(document.getElementById('fl').value) || 0;
-        const tu = parseFloat(document.getElementById('tu').value) || 0;
-        document.getElementById('tl').value = Math.max(0, 100 - (fu + fl + tu));
-        if (document.getElementById('autoCalcEnabled').checked) { calculate(); }
-        else { document.getElementById('resView').style.opacity = "0.5"; }
+    function setDefaultValues() {
+        const gender = document.querySelector('input[name="gender"]:checked').value;
+        if (gender === 'male') {
+            document.getElementById('fStopAge').value = 14; document.getElementById('fRate').value = 1.5;
+            document.getElementById('tStopAge').value = 14; document.getElementById('tRate').value = 1.67;
+        } else {
+            document.getElementById('fStopAge').value = 13; document.getElementById('fRate').value = 1.2;
+            document.getElementById('tStopAge').value = 13; document.getElementById('tRate').value = 1.5;
+        }
+        calculate();
     }
+
+    function syncRatios(type) {
+        const u = document.getElementById(type + 'uRatio');
+        const l = document.getElementById(type + 'lRatio');
+        l.value = (100 - parseFloat(u.value || 0)).toFixed(0);
+        handleInputChange();
+    }
+
+    function handleInputChange() { if (document.getElementById('autoCalcEnabled').checked) calculate(); }
 
     function calculate() {
-        const currentAge = parseFloat(document.getElementById('currentAge').value);
-        const stopAge = parseFloat(document.getElementById('stopAge').value);
-        const growthRate = parseFloat(document.getElementById('growthRate').value);
-        if (currentAge >= stopAge) return;
-        const remainYears = stopAge - currentAge;
-        const totalGrowth = remainYears * growthRate;
-        document.getElementById('resYears').innerText = remainYears.toFixed(1);
-        document.getElementById('resTotal').innerText = totalGrowth.toFixed(1);
-        document.getElementById('resView').style.opacity = "1";
-        const lang = document.querySelector('input[name="lang"]:checked').value;
-        const t = translations[lang];
-        const partNames = [t.fu, t.fl, t.tu, t.tl.replace(/ \(.*\)/, "")];
-        const ratios = [
-            parseFloat(document.getElementById('fu').value),
-            parseFloat(document.getElementById('fl').value),
-            parseFloat(document.getElementById('tu').value),
-            parseFloat(document.getElementById('tl').value)
-        ];
-        const tbody = document.getElementById('resTable');
-        tbody.innerHTML = "";
-        ratios.forEach((ratio, i) => {
-            const potential = (totalGrowth * (ratio / 100)).toFixed(1);
-            tbody.innerHTML += `<tr><td>${partNames[i]}</td><td>${potential} cm</td><td class="loss">-${potential} cm</td></tr>`;
+        const age = parseFloat(document.getElementById('currentAge').value) || 0;
+        const fs = parseFloat(document.getElementById('fStopAge').value) || 0;
+        const fr = parseFloat(document.getElementById('fRate').value) || 0;
+        const ts = parseFloat(document.getElementById('tStopAge').value) || 0;
+        const tr = parseFloat(document.getElementById('tRate').value) || 0;
+        const fy = Math.max(0, fs - age), ty = Math.max(0, ts - age);
+        const fur = parseFloat(document.getElementById('fuRatio').value || 0) / 100;
+        const flr = parseFloat(document.getElementById('flRatio').value || 0) / 100;
+        const tur = parseFloat(document.getElementById('tuRatio').value || 0) / 100;
+        const tlr = parseFloat(document.getElementById('tlRatio').value || 0) / 100;
+
+        const losses = [fy * fr * fur, fy * fr * flr, ty * tr * tur, ty * tr * tlr];
+        const total = losses.reduce((a, b) => a + b, 0);
+
+        document.getElementById('resYearsF').innerText = fy.toFixed(1);
+        document.getElementById('resYearsT').innerText = ty.toFixed(1);
+        document.getElementById('resTotal').innerText = total.toFixed(2);
+        document.getElementById('resTotalLoss').innerText = total.toFixed(2) + " cm";
+
+        const t = translations[currentLang] || translations['en'];
+        let html = "";
+        losses.forEach((v, i) => {
+            const displayRatio = (i < 2 ? [fur, flr][i % 2] : [tur, tlr][i % 2]) * 100;
+            html += `<tr><td>${t.segments[i]}</td><td>${displayRatio.toFixed(0)}%</td><td class="loss">${v.toFixed(2)} cm</td></tr>`;
         });
+        document.getElementById('resTable').innerHTML = html;
     }
 
     function resetAll() {
+        document.querySelector('input[name="gender"][value="female"]').checked = true;
         document.getElementById('currentAge').value = 10;
-        document.getElementById('stopAge').value = 15;
-        document.getElementById('growthRate').value = 2.5;
-        document.getElementById('fu').value = 15;
-        document.getElementById('fl').value = 38;
-        document.getElementById('tu').value = 27;
-        handleInputChange();
-        document.getElementById('resYears').innerText = "-";
-        document.getElementById('resTotal').innerText = "-";
-        document.getElementById('resView').style.opacity = "0.5";
-        const lang = document.querySelector('input[name="lang"]:checked').value;
-        document.getElementById('resTable').innerHTML = `<tr><td colspan="3" style="color:#999; padding:40px;">${translations[lang].placeholder}</td></tr>`;
+        document.getElementById('fuRatio').value = 30;
+        document.getElementById('tuRatio').value = 55;
+        setDefaultValues();
     }
+
+    window.onload = () => { 
+        setDefaultValues(); 
+        changeLanguage('en'); 
+        document.querySelector('input[name="lang"][value="en"]').checked = true;
+    };
 </script>
 </body>
 </html>
